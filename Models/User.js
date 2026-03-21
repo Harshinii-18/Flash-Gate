@@ -26,14 +26,22 @@ const UserSchema = new mongoose.Schema({
   }
 })
 
+//to save only hashed passwod in database
 UserSchema.pre('save', async function(){
   const salt = await bcrypt.genSalt(10)
   this.password = await bcrypt.hash(this.password, salt)
 })
 
+//to create jwt for user
 UserSchema.methods.createJWT = function(){
 const token = jwt.sign({userId: this._id, role: this.role}, process.env.JWT_SECRET, {expiresIn : process.env.JWT_LIFETIME})
 return token
+}
+
+//to match input password with db password
+UserSchema.methods.comparePassword = async function(inputPassword){
+  const isMatch = await bcrypt.compare(inputPassword, this.password)
+  return isMatch
 }
 
 module.exports = mongoose.model('User', UserSchema)
