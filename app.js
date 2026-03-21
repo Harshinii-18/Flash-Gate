@@ -10,6 +10,9 @@ const connectDB = require('./db/connect')
 //route
 const authRouter = require('./routes/auth')
 
+//import auth middleware
+const authMiddleware = require('./middleware/auth')
+
 //import error middleware
 const errorHandlerMiddleware = require('./middleware/error-handler')
 const notFoundMiddleware = require('./middleware/not-found')
@@ -18,7 +21,7 @@ const notFoundMiddleware = require('./middleware/not-found')
 app.use(express.json())
 
 //middleware
-app.use('/api/v1/auth', authRouter)
+app.use('/api/v1/auth', authMiddleware, authRouter)
 
 //error middlewares
 app.use(errorHandlerMiddleware)
