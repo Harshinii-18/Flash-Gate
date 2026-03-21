@@ -9,11 +9,19 @@ const connectDB = require('./db/connect')
 //route
 const authRouter = require('./routes/auth')
 
+//import error middleware
+const errorHandlerMiddleware = require('./middleware/error-handler')
+const notFoundMiddleware = require('./middleware/not-found')
+
 //to get req.body
 app.use(express.json())
 
 //middleware
 app.use('/api/v1/auth', authRouter)
+
+//error middlewares
+app.use(errorHandlerMiddleware)
+app.use(notFoundMiddleware)
 
 //port 
 const port = process.env.PORT || 4000
