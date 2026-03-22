@@ -23,6 +23,7 @@ app.use(express.json())
 //middleware
 app.use('/api/v1/auth', authMiddleware, authRouter)
 
+
 //error middlewares
 app.use(errorHandlerMiddleware)
 app.use(notFoundMiddleware)
