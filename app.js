@@ -9,6 +9,7 @@ const connectDB = require('./db/connect')
 
 //route
 const authRouter = require('./routes/auth')
+const productRouter = require('./routes/product')
 
 //import auth middleware
 const authMiddleware = require('./middleware/auth')
@@ -20,8 +21,9 @@ const notFoundMiddleware = require('./middleware/not-found')
 //to get req.body
 app.use(express.json())
 
-//middleware
-app.use('/api/v1/auth', authMiddleware, authRouter)
+//routes
+app.use('/api/v1/auth', authRouter)
+app.use('/api/v1/products', authMiddleware, productRouter)
 
 
 //error middlewares
