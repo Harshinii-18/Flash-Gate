@@ -6,6 +6,12 @@ const getAllProducts = async(req, res)=>{
   res.status(StatusCodes.OK).json({products})
 }
 
+const getProductById = async(req, res)=>{
+  const productId = req.params.id
+  const product = await Product.findOne({_id : productId})
+  res.status(StatusCodes.OK).json({product})
+}
+
 const createProduct = async(req, res)=>{
   console.log(req.body)
   req.body.createdBy = req.user.userId
@@ -19,5 +25,6 @@ const createProduct = async(req, res)=>{
 
 module.exports = {
   getAllProducts,
-  createProduct
+  createProduct,
+  getProductById
 }
