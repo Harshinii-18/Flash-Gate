@@ -13,7 +13,6 @@ const getProductById = async(req, res)=>{
 }
 
 const createProduct = async(req, res)=>{
-  console.log(req.body)
   req.body.createdBy = req.user.userId
   const product = await Product.create(req.body)
   res.status(StatusCodes.CREATED).json({product})

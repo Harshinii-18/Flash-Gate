@@ -10,6 +10,7 @@ const connectDB = require('./db/connect')
 //route
 const authRouter = require('./routes/auth')
 const productRouter = require('./routes/product')
+const orderRouter = require('./routes/order')
 
 //import auth middleware
 const authMiddleware = require('./middleware/auth')
@@ -24,11 +25,13 @@ app.use(express.json())
 //routes
 app.use('/api/v1/auth', authRouter)
 app.use('/api/v1/products', authMiddleware, productRouter)
-
+app.use('/api/v1/orders', authMiddleware, orderRouter)
 
 //error middlewares
 app.use(errorHandlerMiddleware)
 app.use(notFoundMiddleware)
+
+
 
 //port 
 const port = process.env.PORT || 4000
