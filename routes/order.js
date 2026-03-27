@@ -1,8 +1,10 @@
 const express = require('express')
 const router = express.Router()
 const {createOrder} = require('../controllers/order')
-console.log('Router loading')
 
-router.route('/').post(createOrder)
+const {validateMiddleware}= require('../middleware/validate')
+const {createOrderSchema} = require('../validation/order')
+
+router.route('/').post(validateMiddleware(createOrderSchema), createOrder)
 
 module.exports = router
