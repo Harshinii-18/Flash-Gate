@@ -8,7 +8,7 @@ const createOrder = async(req, res)=>{
   //Get product
   const product = await Product.findOne({_id : req.body.productId})
   if(!product){
-    throw new BadRequestError('Invalid product id')
+    throw new NotFoundError('Invalid product id')
   }
 
   //check flash sale timing

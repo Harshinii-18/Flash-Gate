@@ -1,5 +1,6 @@
 const Product = require('../models/Product')
 const {StatusCodes} = require('http-status-codes')
+const {NotFoundError} = require('../errors')
 
 const getAllProducts = async(req, res)=>{
   const products = await Product.find({})
@@ -9,6 +10,9 @@ const getAllProducts = async(req, res)=>{
 const getProductById = async(req, res)=>{
   const productId = req.params.id
   const product = await Product.findOne({_id : productId})
+  if(!product){
+    throw new NotFoundError (`No product with id ${productId} found`)
+  }
   res.status(StatusCodes.OK).json({product})
 }
 
@@ -24,9 +28,11 @@ const updateProduct = async(req, res)=>{
     returnDocument: 'after',
     runValidators : true
   })
+  if(!product){
+    throw new NotFoundError (`No product with id ${productId} found`)
+  }
   res.status(StatusCodes.OK).json({product})
-
-}
+} 
 
 module.exports = {
   getAllProducts,
