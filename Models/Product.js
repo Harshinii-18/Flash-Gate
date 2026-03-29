@@ -17,6 +17,10 @@ const ProductSchema = new mongoose.Schema({
     min : 0,
     default : 0 
   },
+  reservedStock : {
+    type : Number,
+    default : 0
+  },
   flashSaleStart : {
     type : Date,
     required : [true, 'Flash sale start date is required']
