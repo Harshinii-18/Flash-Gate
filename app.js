@@ -11,6 +11,7 @@ const connectDB = require('./db/connect')
 const authRouter = require('./routes/auth')
 const productRouter = require('./routes/product')
 const orderRouter = require('./routes/order')
+const reservationRouter = require('./routes/reservation')
 
 //import auth middleware
 const authMiddleware = require('./middleware/auth')
@@ -26,6 +27,7 @@ app.use(express.json())
 app.use('/api/v1/auth', authRouter)
 app.use('/api/v1/products', authMiddleware, productRouter)
 app.use('/api/v1/orders', authMiddleware, orderRouter)
+app.use('/api/v1/flash', authMiddleware, reservationRouter)
 
 //error middlewares
 app.use(errorHandlerMiddleware)
