@@ -27,7 +27,7 @@ app.use(express.json())
 app.use('/api/v1/auth', authRouter)
 app.use('/api/v1/products', authMiddleware, productRouter)
 app.use('/api/v1/orders', authMiddleware, orderRouter)
-app.use('/api/v1/flash', authMiddleware, reservationRouter)
+app.use('/api/v1', authMiddleware, reservationRouter)
 
 //error middlewares
 app.use(errorHandlerMiddleware)

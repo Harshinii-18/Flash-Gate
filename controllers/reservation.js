@@ -1,5 +1,6 @@
 const Reservation = require('../models/Reservation')
 const Product = require('../models/Product')
+const Order = require('../models/Order')
 const {StatusCodes} = require('http-status-codes')
 const {NotFoundError, BadRequestError} = require('../errors')
 
@@ -47,4 +48,74 @@ const createReservation = async(req, res)=>{
   res.status(StatusCodes.CREATED).json(reservation)
 }
 
-module.exports = {createReservation}
+const getReservation = async(req, res)=>{
+  const now = new Date()
+  let reservation = await Reservation.findOneAndUpdate({_id : req.params.id,
+     status : "ACTIVE",
+     expiresAt : {$lt : now}
+    }, {
+      status : "EXPIRED"
+    },{
+      returnDocument : 'after',
+      runValidators : true
+    })
+  
+  if(reservation){
+    await Product.findByIdAndUpdate(reservation.product, {
+      $inc : {reservedStock : -reservation.quantity}
+    })
+  }else{
+    reservation = await Reservation.findById(req.params.id)
+  }
+
+  if(!reservation){
+    throw new NotFoundError('Invalid reservation id')
+  }
+  res.status(StatusCodes.OK).json({reservation})
+  
+}
+
+const confirmOrder = async(req, res)=>{
+  let reservation = await Reservation.findOneAndUpdate({
+    _id : req.params.id,
+    status : "ACTIVE",
+    expiresAt : {$gt : new Date()}
+  },{
+    status : "COMPLETED",
+  },{
+    returnDocument : 'after',
+    runValidators : true
+  })
+
+  if(!reservation){
+    throw new NotFoundError('Reservation invalid or already processed')
+  }
+  
+  //total price
+  
+  const quantity = reservation.quantity
+  const product = await Product.findOneAndUpdate({
+    _id :reservation.product,
+    reservedStock : {$gte: quantity}},
+  {
+    $inc : {reservedStock : -quantity, stock : -quantity}
+  },{
+    returnDocument : 'after',
+    runValidators : true
+  })
+  if(!product){
+    throw new BadRequestError('Stock inconsistency detected')
+  }
+  const totalPrice = reservation.quantity * product.price
+
+  const order = await Order.create({
+    user : reservation.user,
+    product : reservation.product,
+    quantity : reservation.quantity,
+    totalPrice : totalPrice})
+  res.status(StatusCodes.CREATED).json({order, product})
+}
+
+
+
+module.exports = {createReservation, getReservation, confirmOrder}
