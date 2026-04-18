@@ -1,14 +1,14 @@
 const Joi = require("joi")
 const mongoose = require('mongoose')
 
-const createOrderSchema = Joi.object({
-  productId: Joi.string().length(24).required().custom((value, helpers) => {
+const getOrdersByIdSchema = Joi.object({
+  id: Joi.string().length(24).required()
+  .custom((value, helpers) => {
       if (!mongoose.Types.ObjectId.isValid(value)) {
-        return helpers.error("Product Id");
+        return helpers.error("Order id");
       }
       return value;
-    }, "ObjectId validation"),
-  quantity: Joi.number().min(0).required()
+    }, "ObjectId validation")
 }).options({ allowUnknown: false })
 
-module.exports = {createOrderSchema}
+module.exports = {getOrdersByIdSchema}
