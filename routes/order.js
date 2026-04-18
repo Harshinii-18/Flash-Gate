@@ -1,10 +1,10 @@
 const express = require('express')
 const router = express.Router()
-const {createOrder} = require('../controllers/order')
+const {createOrder, getAllOrders, getOrdersById} = require('../controllers/order')
 
 const {validateMiddleware}= require('../middleware/validate')
-const {createOrderSchema} = require('../validation/order')
 
-router.route('/').post(validateMiddleware(createOrderSchema), createOrder)
+router.route('/').get(getAllOrders)
+router.route('/:id').get(getOrdersById)
 
 module.exports = router
