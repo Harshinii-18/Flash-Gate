@@ -7,6 +7,9 @@ const app = express()
 //db
 const connectDB = require('./db/connect')
 
+//redis
+const {connectRedis} = require('./config/redis')
+
 //route
 const authRouter = require('./routes/auth')
 const productRouter = require('./routes/product')
@@ -19,6 +22,7 @@ const authMiddleware = require('./middleware/auth')
 //import error middleware
 const errorHandlerMiddleware = require('./middleware/error-handler')
 const notFoundMiddleware = require('./middleware/not-found')
+
 
 //to get req.body
 app.use(express.json())
@@ -42,6 +46,7 @@ const port = process.env.PORT || 4000
 const start = async()=>{
   try {
     await connectDB(process.env.MONGO_URI)
+    await connectRedis()
     app.listen(port, ()=>{
       console.log(`Server is listening on port ${port}...`)
     })
