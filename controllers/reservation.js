@@ -92,7 +92,8 @@ const getReservation = async(req, res)=>{
 }
 
 const confirmOrder = async(req, res)=>{
-  let reservation = await Reservation.findOneAndUpdate({
+  try{
+    let reservation = await Reservation.findOneAndUpdate({
     _id : req.params.id,
     status : "ACTIVE",
     expiresAt : {$gt : new Date()}
@@ -129,7 +130,22 @@ const confirmOrder = async(req, res)=>{
     product : reservation.product,
     quantity : reservation.quantity,
     totalPrice : totalPrice})
-  res.status(StatusCodes.CREATED).json({order, product})
+
+  const responseData = {
+    success: true,
+    data: order
+  }
+  console.log("Waiting 12 seconds...");
+  await new Promise(resolve => setTimeout(resolve, 12000));
+  // throw new error
+  markSuccess(req.idempotencyKey, responseData)
+  res.set('X-Idempotency-Status', 'CREATED');
+  res.status(StatusCodes.CREATED).json({responseData, product})
+  }catch(error){
+    markFailed(req.idempotencyKey)
+    throw error
+  }
+  
 }
 
 

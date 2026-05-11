@@ -13,7 +13,7 @@ const {idempotencyMiddleware} = require('../middleware/idempotency')
 
 
 router.route('/flash/reserve').post(validateMiddleware(createReservationSchema), idempotencyMiddleware,createReservation)
-router.route('/flash/confirm/:id').post(validateMiddleware(confirmOrderSchema, "params"),confirmOrder)   
+router.route('/flash/confirm/:id').post(validateMiddleware(confirmOrderSchema, "params"), idempotencyMiddleware,confirmOrder)   
 router.route('/reservations/:id').get(validateMiddleware(getReservationSchema, "params"), getReservation)
 
 module.exports = router
