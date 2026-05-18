@@ -21,13 +21,6 @@ const getReservationSchema = Joi.object({
     }),
 }).options({ allowUnknown: false })
 
-const confirmOrderSchema = Joi.object({
-  id : Joi.string().length(24).required().custom((value, helpers) => {
-      if (!mongoose.Types.ObjectId.isValid(value)) {
-        return helpers.message("Invalid reservationId")
-      }
-      return value
-    }),
-}).options({ allowUnknown: false })
 
-module.exports = {createReservationSchema, getReservationSchema, confirmOrderSchema}
+
+module.exports = {createReservationSchema, getReservationSchema}

@@ -2,42 +2,22 @@ const Order = require('../models/Order')
 const {StatusCodes} = require('http-status-codes')
 const Product = require('../models/Product')
 const {BadRequestError, NotFoundError} = require('../errors')
+const orderService = require('../services/order')
 
+const confirmOrder = async(req, res)=>{
+  console.log('inside controller')
+  const order = await orderService.confirmOrder({
+    reservationId : req.params.id,
+    idempotencyKey : req.idempotencyKey
+  })
+  const responseData = {
+    success: true,
+    data: order
+  }
+  res.set('X-Idempotency-Status', 'CREATED');
+  res.status(StatusCodes.CREATED).json({responseData})  
+}
 
-// const createOrder = async(req, res)=>{
-//   //Get product
-//   const product = await Product.findOne({_id : req.body.productId})
-//   if(!product){
-//     throw new NotFoundError('Invalid product id')
-//   }
-
-//   //check flash sale timing
-//   const now = new Date()
-//   if(now < product.flashSaleStart || now > product.flashSaleEnd){
-//     throw new BadRequestError('Flash sale is not active')
-//   }
-
-//   //check stock & deduct stock
-//   if(product.stock == 0 || product.stock < req.body.quantity){
-//     throw new BadRequestError('Insufficient stock for the order placed')
-//   }
-//   product.stock -= req.body.quantity
-//   await product.save()
-
-//   //total price
-//   const totalPrice = req.body.quantity * product.price
-
-//   //create order
-
-//   req.body.user = req.user.userId
-//   const order = await Order.create({
-//     user : req.user.userId,
-//     product : req.body.productId,
-//     quantity : req.body.quantity,
-//     totalPrice : totalPrice})
-//   res.status(StatusCodes.CREATED).json({order, product})
-
-// }
 
 const getAllOrders = async(req, res)=>{
   let orders;
@@ -45,12 +25,15 @@ const getAllOrders = async(req, res)=>{
     orders = await Order.find({})
   }else{
     orders = await Order.find({user : req.user.userId})
-
   }
   if(!orders){
     throw new NotFoundError ('No orders found')
   }
-  res.status(StatusCodes.OK).json({orders})
+  const responseData = {
+    success: true,
+    data: orders
+  }
+  res.status(StatusCodes.OK).json(responseData)
   
 }
 
@@ -60,6 +43,10 @@ const getOrdersById = async(req, res)=>{
   if(!order){
     throw new NotFoundError (`No order with id ${orderId} found`)
   }
-  res.status(StatusCodes.OK).json({order})
+    const responseData = {
+    success: true,
+    data: order
+  }
+  res.status(StatusCodes.OK).json(responseData)
 }
-module.exports = {getAllOrders, getOrdersById}
+module.exports = {confirmOrder, getAllOrders, getOrdersById}

@@ -10,7 +10,11 @@ const register = async(req, res)=>{
     name, email, password, role : "User"
   })
   const token = user.createJWT()
-  res.status(StatusCodes.CREATED).json({user :{id: user._id, name: user.name, email: user.email, role: user.role }, token})
+  const responseData = {
+    success: true,
+    data : {user :{id: user._id, name: user.name, email: user.email, role: user.role }, token}
+  }
+  res.status(StatusCodes.CREATED).json(responseData)
   
 }
 
@@ -25,7 +29,11 @@ const login = async(req, res)=>{
     throw new UnauthenticatedError('Invalid credentials')
   }
   const token = user.createJWT()
-  res.status(StatusCodes.OK).json({user :{id: user._id, name: user.name, email: user.email, role: user.role }, token})
+  const responseData = {
+    success: true,
+    data : {user :{id: user._id, name: user.name, email: user.email, role: user.role }, token}
+  }
+  res.status(StatusCodes.OK).json(responseData)
 
 }
 
