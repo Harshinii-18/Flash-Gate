@@ -1,4 +1,4 @@
-const User = require('../models/User')
+const User = require('../tempmodels/User')
 const jwt = require('jsonwebtoken')
 const {StatusCodes} =  require('http-status-codes')
 const {UnauthenticatedError} = require('../errors')

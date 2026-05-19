@@ -1,4 +1,4 @@
-const Product = require('../models/Product')
+const Product = require('../tempmodels/Product')
 const {StatusCodes} = require('http-status-codes')
 const {NotFoundError} = require('../errors')
 
