@@ -1,7 +1,7 @@
-const Order = require('../tempmodels/Order')
+const Order = require('../models/Order')
 const {StatusCodes} = require('http-status-codes')
-const Product = require('../tempmodels/Product')
-const Reservation = require('../tempmodels/Reservation')
+const Product = require('../models/Product')
+const Reservation = require('../models/Reservation')
 const {BadRequestError, NotFoundError} = require('../errors')
 const { markSuccess, markFailed } = require('./idempotency')
 

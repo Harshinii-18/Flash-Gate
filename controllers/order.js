@@ -1,6 +1,6 @@
-const Order = require('../tempmodels/Order')
+const Order = require('../models/Order')
 const {StatusCodes} = require('http-status-codes')
-const Product = require('../tempmodels/Product')
+const Product = require('../models/Product')
 const {BadRequestError, NotFoundError} = require('../errors')
 const orderService = require('../services/order')
 
