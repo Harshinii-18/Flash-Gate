@@ -40,7 +40,7 @@ app.use(notFoundMiddleware)
 
 
 //port 
-const port = process.env.PORT || 4000
+const port = process.env.PORT
 
 //start fn
 const start = async()=>{

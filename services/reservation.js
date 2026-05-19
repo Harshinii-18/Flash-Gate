@@ -30,7 +30,7 @@ const createReservation = async({productId,
     },{
       $inc : {reservedStock : quantity}
     },{
-      new : true,
+      returnDocument : 'after',
       runValidators : true
     }
     )

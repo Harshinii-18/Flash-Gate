@@ -15,7 +15,6 @@ const markSuccess = async(key, res)=>{
 }
 
 const markFailed = async(key)=>{
-  console.log(key)
   await client.del(key)
 }
 

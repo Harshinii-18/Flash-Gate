@@ -5,7 +5,6 @@ const {BadRequestError, NotFoundError} = require('../errors')
 const orderService = require('../services/order')
 
 const confirmOrder = async(req, res)=>{
-  console.log('inside controller')
   const order = await orderService.confirmOrder({
     reservationId : req.params.id,
     idempotencyKey : req.idempotencyKey
