@@ -1,7 +1,7 @@
 const Order = require('../models/Order')
 const {StatusCodes} = require('http-status-codes')
 const Product = require('../models/Product')
-const {BadRequestError, NotFoundError} = require('../errors')
+const {BadRequestError, NotFoundError, ForbiddenError} = require('../errors')
 const orderService = require('../services/order')
 
 const confirmOrder = async(req, res)=>{
@@ -38,9 +38,12 @@ const getAllOrders = async(req, res)=>{
 
 const getOrdersById = async(req, res)=>{
   const orderId = req.params.id
-  const order = await Order.findOne({_id : orderId, user: req.user.userId})
+  const order = await Order.findOne({_id : orderId})
   if(!order){
     throw new NotFoundError (`No order with id ${orderId} found`)
+  }
+  if(req.user.role === 'User' && order.user.toString() !== req.user.userId){
+    throw new ForbiddenError('Cannot access order')
   }
     const responseData = {
     success: true,

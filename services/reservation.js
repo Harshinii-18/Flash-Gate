@@ -2,7 +2,7 @@ const Reservation = require('../models/Reservation')
 const Product = require('../models/Product')
 const Order = require('../models/Order')
 const {StatusCodes} = require('http-status-codes')
-const {NotFoundError, BadRequestError} = require('../errors')
+const {NotFoundError, BadRequestError, ForbiddenError} = require('../errors')
 const { markSuccess, markFailed } = require('./idempotency')
 
 
@@ -62,7 +62,7 @@ const createReservation = async({productId,
   
 }
 
-const getReservation = async({id})=>{
+const getReservation = async({id, userId, role})=>{
   const now = new Date()
   let reservation = await Reservation.findOneAndUpdate({_id : id,
      status : "ACTIVE",
@@ -84,6 +84,10 @@ const getReservation = async({id})=>{
 
   if(!reservation){
     throw new NotFoundError('Invalid reservation id')
+  }
+
+  if(role === 'User' && reservation.user.toString() !== userId){
+    throw new ForbiddenError('Cannot access reservation')
   }
   return reservation
 }

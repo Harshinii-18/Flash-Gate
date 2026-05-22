@@ -1,10 +1,17 @@
 const {StatusCodes} = require('http-status-codes')
 const {ForbiddenError} = require('../errors')
-const role = async(req, res, next)=>{
+const adminRole = async(req, res, next)=>{
   if(req.user.role !== 'Admin'){
     throw new ForbiddenError('Authentication Failed')
   }
   next()
 }
 
-module.exports = role
+const userRole = async(req, res, next)=>{
+  if(req.user.role !== 'User'){
+    throw new ForbiddenError('Authentication Failed')
+  }
+  next()
+}
+
+module.exports = {adminRole, userRole}

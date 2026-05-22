@@ -29,7 +29,9 @@ const createReservation = async(req, res)=>{
 
 const getReservation = async(req, res)=>{
   const reservation = await reservationService.getReservation({
-    id : req.params.id
+    id : req.params.id,
+    userId : req.user.userId,
+    role : req.user.role
   })
   const responseData = {
         success: true,

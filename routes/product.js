@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const roleMiddleware = require('../middleware/role')
+const {adminRole} = require('../middleware/role')
 const {getAllProducts,
   createProduct,
   getProductById,
@@ -12,11 +12,11 @@ const {createProductSchema, updateProductSchema,getProductByIdSchema} = require(
 
 router.route('/')
   .get(getAllProducts)
-  .post(validateMiddleware(createProductSchema),roleMiddleware, createProduct)
+  .post(validateMiddleware(createProductSchema),adminRole, createProduct)
 
 router.route('/:id')
   .get(validateMiddleware(getProductByIdSchema, "params"),getProductById)
-  .patch(validateMiddleware(updateProductSchema),roleMiddleware, updateProduct)
+  .patch(validateMiddleware(updateProductSchema),adminRole, updateProduct)
 
 module.exports = router
 
