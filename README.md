@@ -1,2 +1,20 @@
-# Flash-Gate
-FlashGate is a backend project that simulates a flash sale system, focusing on API design, authentication, and controlled stock handling. Built to strengthen core backend fundamentals using Node.js and Express.
+# ⚡ Flash Gate — V3
+
+A reliability-focused backend system for flash-sale reservations and order processing built with Node.js, Express, MongoDB, and Redis.
+
+## Architecture Focus
+- Concurrency-safe reservation workflows
+- Atomic inventory updates
+- Redis-based idempotency
+- Ownership-based authorization
+- Defensive API design
+
+## Tech Stack
+Node.js • Express.js • MongoDB • Redis • Joi • JWT
+
+## Deployment
+Render • MongoDB Atlas • Redis Cloud
+
+## Planned Evolution
+- V4: Async queues, workers, payment workflows
+- V5: Observability, metrics, CI/CD, testing
