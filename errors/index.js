@@ -4,6 +4,11 @@ const UnauthenticatedError = require('./unauthenticated')
 const NotFoundError = require('./not-found')
 const ForbiddenError = require('./forbidden')
 const ConflictError = require('./conflict')
+const SystemError = require('./system')
+const InvariantViolationError = require('./invariant-violation')
+const DBConsistencyError = require('./db-consistency')
+const RedisOperationError = require('./redis-operation')
+
 
 module.exports = {
   CustomAPIError,
@@ -11,5 +16,9 @@ module.exports = {
   UnauthenticatedError,
   NotFoundError,
   ForbiddenError,
-  ConflictError
+  ConflictError,
+  SystemError,
+  InvariantViolationError,
+  DBConsistencyError,
+  RedisOperationError
 }
