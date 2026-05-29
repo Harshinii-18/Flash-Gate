@@ -4,6 +4,7 @@ const Order = require('../models/Order')
 const {StatusCodes} = require('http-status-codes')
 const {NotFoundError, BadRequestError, ForbiddenError} = require('../errors')
 const { markSuccess, markFailed } = require('./idempotency')
+const {logger} = require('../config/logger')
 
 
 const createReservation = async({productId,
@@ -54,6 +55,14 @@ const createReservation = async({productId,
         success: true,
         data: reservation
     })
+    logger.info(
+    {
+      reservationId : reservation._id,
+      productId : reservation.product,
+      quantity : reservation.quantity
+    },
+    'Reservation created'
+    )
     return reservation
   }catch(error){
     await markFailed(idempotencyKey)
@@ -78,6 +87,13 @@ const getReservation = async({id, userId, role})=>{
     await Product.findByIdAndUpdate(reservation.product, {
       $inc : {reservedStock : -reservation.quantity}
     })
+    logger.info(
+    {
+      reservationId : reservation._id,
+      releasedStock : reservation.quantity
+    },
+    'Reservation expired'
+    )
   }else{
     reservation = await Reservation.findById(id)
   }
