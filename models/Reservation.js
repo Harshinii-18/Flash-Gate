@@ -17,7 +17,7 @@ const ReservationSchema = new mongoose.Schema({
   },
   status :{
     type : String,
-    enum : ['ACTIVE', 'EXPIRED', 'COMPLETED'],
+    enum : ['ACTIVE', 'EXPIRED', 'COMPLETED', 'PROCESSING'],
     default : "ACTIVE"
   },
   expiresAt : {

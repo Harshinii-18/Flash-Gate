@@ -11,7 +11,7 @@ const {createProductSchema, updateProductSchema,getProductByIdSchema} = require(
 
 
 router.route('/')
-  .get(adminRole, getAllProducts)
+  .get(getAllProducts)
   .post(validateMiddleware(createProductSchema),adminRole, createProduct)
 
 router.route('/:id')

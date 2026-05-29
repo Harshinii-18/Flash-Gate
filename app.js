@@ -2,7 +2,8 @@ require('dotenv').config()
 require('express-async-errors')
 const express = require('express')
 const app = express()
-
+//logger
+const {logger} = require('./config/logger')
 
 //db
 const connectDB = require('./db/connect')
@@ -51,10 +52,10 @@ const start = async()=>{
     await connectDB(process.env.MONGO_URI)
     await connectRedis()
     app.listen(port, ()=>{
-      console.log(`Server is listening on port ${port}...`)
+      logger.info(`Server is listening on port ${port}...`)
     })
   } catch (error) {
-    console.log(error)
+    logger.error('Application startup failed')
   }
 }
 start()
