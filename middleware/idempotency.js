@@ -9,7 +9,9 @@ const idempotencyMiddleware = async(req, res, next)=>{
 
   const payload = {
     body : req.body,
-    userId : req.user.userId
+    userId : req.user.userId,
+    params: req.params,
+    method : req.method
   }
   const normPayload = stringify(payload)
   const hash = crypto
