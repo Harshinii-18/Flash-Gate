@@ -5,16 +5,16 @@ const {BadRequestError, NotFoundError, ForbiddenError} = require('../errors')
 const orderService = require('../services/order')
 
 const confirmOrder = async(req, res)=>{
-  const order = await orderService.confirmOrder({
+  const job = await orderService.scheduleOrder({
     reservationId : req.params.id,
     idempotencyKey : req.idempotencyKey
   })
   const responseData = {
     success: true,
-    data: order
+    data: job
   }
   res.set('X-Idempotency-Status', 'CREATED');
-  res.status(StatusCodes.CREATED).json({responseData})  
+  res.status(StatusCodes.ACCEPTED).json({responseData})  
 }
 
 

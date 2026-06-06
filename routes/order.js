@@ -10,6 +10,6 @@ const orderService = require('../services/order')
 
 router.route('/').get(getAllOrders)
 router.route('/:id').get(validateMiddleware(getOrdersByIdSchema, "params"),getOrdersById)
-router.route('/flash/confirm/:id').post(validateMiddleware(confirmOrderSchema, "params"), userRole, idempotencyMiddleware,confirmOrder,orderService.confirmOrder) 
+router.route('/flash/confirm/:id').post(validateMiddleware(confirmOrderSchema, "params"), userRole, idempotencyMiddleware,confirmOrder,orderService.scheduleOrder) 
 
 module.exports = router

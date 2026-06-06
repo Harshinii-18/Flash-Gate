@@ -13,7 +13,7 @@ client.on('error', error =>  {logger.error({
 const connectRedis = async() =>{
   try {
     await client.connect();
-    logger.info('Redis connected') 
+    logger.info('Redis connected')
   } catch (error) {
     logger.error({
       error: error.message,

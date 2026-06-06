@@ -5,8 +5,24 @@ const Reservation = require('../models/Reservation')
 const {BadRequestError, NotFoundError, ConflictError, CustomAPIError, InvariantViolationError, SystemError} = require('../errors')
 const { markSuccess, markFailed } = require('./idempotency')
 const {logger} = require('../config/logger')
+const orderQueue = require('../queues/order')
 
-const confirmOrder = async({reservationId, idempotencyKey})=>{
+const scheduleOrder = async({reservationId, idempotencyKey})=>{
+  await orderQueue.add(
+  "PROCESS_ORDER",
+    {reservationId, idempotencyKey},
+    {attempts: 3, backoff: {type: "exponential",delay: 2000}}
+  )
+
+  logger.info({
+    reservationId : reservationId
+  },
+  'Job Created for order processing'
+  )
+} 
+
+const processOrder = async({reservationId, idempotencyKey})=>{
+  
   let stockUpdated = false
   let orderCreated = false
   let reservation
@@ -14,6 +30,7 @@ const confirmOrder = async({reservationId, idempotencyKey})=>{
   let quantity
   let order
   try{
+    // throw new Error("Test retry");
     reservation = await Reservation.findOneAndUpdate({
     _id : reservationId,
     status : "ACTIVE",
@@ -146,7 +163,6 @@ const confirmOrder = async({reservationId, idempotencyKey})=>{
       },'Order failed')
       throw error  
     }   
-} 
+}
 
-
-module.exports = {confirmOrder}
+module.exports = {scheduleOrder, processOrder}
