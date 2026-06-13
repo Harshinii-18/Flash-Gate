@@ -2,7 +2,7 @@ const { Queue } = require('bullmq')
 const { connection } = require('../config/bullmq')
 
 const orderQueue = new Queue(
-  'order-processing',
+  process.env.ORDER_QUEUE_NAME,
   { connection }
 )
 

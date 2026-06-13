@@ -13,7 +13,7 @@ const startWorker = async()=>{
     await connectDB(process.env.MONGO_URI)
     await connectRedis()
     const worker = new Worker(
-      'order-processing',
+      process.env.ORDER_QUEUE_NAME,
       async (job) => {
         const {reservationId,idempotencyKey} = job.data
         const order = await processOrder({reservationId, idempotencyKey})
