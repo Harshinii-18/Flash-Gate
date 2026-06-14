@@ -5,6 +5,7 @@ const {StatusCodes} = require('http-status-codes')
 const {NotFoundError, BadRequestError, ForbiddenError} = require('../errors')
 const { markSuccess, markFailed } = require('./idempotency')
 const {logger} = require('../config/logger')
+const mongoose = require('mongoose')
 
 
 const createReservation = async({productId,

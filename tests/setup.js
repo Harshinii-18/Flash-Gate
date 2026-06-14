@@ -1,34 +1,34 @@
 require('dotenv').config({ path: '.env.test' })
 const mongoose = require('mongoose')
 const redis = require('redis')
+const crypto = require('crypto')
 
 //db
 const connectDB = require('../db/connect')
 //redis
 const {connectRedis, client} = require('../config/redis')
-
 const orderQueue = require('../queues/order')
 
+
 beforeAll(async () => {
-  console.log('TEST SETUP RUNNING')
   await connectDB(process.env.MONGO_URI)
   if (!client.isOpen) {
     await connectRedis()
   }
 })
 
-afterEach(async () => {
-  //clear documents in mongo collections
-  const collections = mongoose.connection.collections
-  for (const key in collections) {
-    await collections[key].deleteMany({})
-  }
-
+beforeEach(async () => {
+  //clear db
+  await Promise.all(
+  Object.values(mongoose.connection.collections)
+    .map(collection => collection.deleteMany({}))
+  )
   //clear Redis
   await client.flushDb()
 
   //clear queue
-  await orderQueue.obliterate({ force: true })
+  // await orderQueue.obliterate({ force: true })
+  await orderQueue.drain()
 })
 
 afterAll(async () => {

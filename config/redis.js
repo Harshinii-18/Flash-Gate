@@ -1,4 +1,3 @@
-require('dotenv').config()
 const redis = require('redis')
 const {logger} = require('../config/logger')
 const {RedisOperationError} = require('../errors')
