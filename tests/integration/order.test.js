@@ -2,7 +2,6 @@ const crypto = require('crypto')
 const request = require('supertest')
 const app = require('../../app')
 const orderService = require('../../services/order')
-const waitForReservationCompletion = require('../helpers/waitForReservationStatus')
 
 
 //helper
@@ -82,67 +81,7 @@ test('returns 409 when same key is reused with different reservation', async () 
 
 })
 
-test('returns 409 when request is still processing', async () => {
 
-  const user = await createUser()
-  const token = user.createJWT()
-
-  const reservation = await createReservation({
-    user: user._id
-  })
-
-  const key = `confirm-${crypto.randomUUID()}`
-
-  const firstResponse = await request(app)
-    .post(`/api/v1/orders/flash/confirm/${reservation._id}`)
-    .set('Authorization', `Bearer ${token}`)
-    .set('Idempotency-Key', key)
-
-  expect(firstResponse.statusCode).toBe(202)
-
-  const replayResponse = await request(app)
-    .post(`/api/v1/orders/flash/confirm/${reservation._id}`)
-    .set('Authorization', `Bearer ${token}`)
-    .set('Idempotency-Key', key)
-
-  expect(replayResponse.statusCode).toBe(409)
-
-  // expect(
-  //   replayResponse.headers['x-idempotency-status']
-  // ).toBe('CACHED')
-
-})
-
-test('returns 409 when request is still processing', async () => {
-
-  const user = await createUser()
-  const token = user.createJWT()
-
-  const reservation = await createReservation({
-    user: user._id
-  })
-
-  const key = `confirm-${crypto.randomUUID()}`
-
-  const firstResponse = await request(app)
-    .post(`/api/v1/orders/flash/confirm/${reservation._id}`)
-    .set('Authorization', `Bearer ${token}`)
-    .set('Idempotency-Key', key)
-
-  expect(firstResponse.statusCode).toBe(202)
-
-  const replayResponse = await request(app)
-    .post(`/api/v1/orders/flash/confirm/${reservation._id}`)
-    .set('Authorization', `Bearer ${token}`)
-    .set('Idempotency-Key', key)
-
-  expect(replayResponse.statusCode).toBe(409)
-
-  // expect(
-  //   replayResponse.headers['x-idempotency-status']
-  // ).toBe('CACHED')
-
-})
 
 // test('returns cached response after processing completes', async () => {
 

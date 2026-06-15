@@ -41,7 +41,7 @@ const idempotencyMiddleware = async(req, res, next)=>{
 
     if(content.status ==="PROCESSING"){
       throw new ConflictError('Request already in progress')
-    }else if(content.status === "COMPLETED"){
+    }else if(content.status === "SUCCESS"){
       res.set('X-Idempotency-Status', 'CACHED');
       logger.info({
         requestId : req.requestId,

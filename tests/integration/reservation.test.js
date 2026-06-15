@@ -107,4 +107,74 @@ describe('Reservation API', () => {
 
   })
 
+  test('same idempotency key returns cached reservation response', async () => {
+
+    const user = await createUser()
+    const token = user.createJWT()
+
+    const admin = await createUser({
+      role: 'Admin'
+    })
+    const product = await createProduct({
+      createdBy: admin._id
+    })
+    const key = crypto.randomUUID()
+    const firstResponse = await request(app)
+      .post('/api/v1/flash/reserve')
+      .set('Authorization', `Bearer ${token}`)
+      .set('Idempotency-Key', `reservation-${key}`)
+      .send({
+        productId: product._id,
+        quantity: 5
+      })
+    
+    const secondResponse = await request(app)
+      .post('/api/v1/flash/reserve')
+      .set('Authorization', `Bearer ${token}`)
+      .set('Idempotency-Key', `reservation-${key}`)
+      .send({
+        productId: product._id,
+        quantity: 5
+      })
+
+    expect(firstResponse.statusCode).toBe(201)
+    expect(secondResponse.statusCode).toBe(200)
+
+  })
+
+  test('same key with different quantity returns 409', async () => {
+
+    const user = await createUser()
+    const token = user.createJWT()
+
+    const admin = await createUser({
+      role: 'Admin'
+    })
+    const product = await createProduct({
+      createdBy: admin._id
+    })
+    const key = crypto.randomUUID()
+    const firstResponse = await request(app)
+      .post('/api/v1/flash/reserve')
+      .set('Authorization', `Bearer ${token}`)
+      .set('Idempotency-Key', `reservation-${key}`)
+      .send({
+        productId: product._id,
+        quantity: 5
+      })
+    
+    const secondResponse = await request(app)
+      .post('/api/v1/flash/reserve')
+      .set('Authorization', `Bearer ${token}`)
+      .set('Idempotency-Key', `reservation-${key}`)
+      .send({
+        productId: product._id,
+        quantity: 1
+      })
+
+    expect(firstResponse.statusCode).toBe(201)
+    expect(secondResponse.statusCode).toBe(409)
+
+  })
+
 })
