@@ -1,4 +1,4 @@
-require('dotenv').config()
+require('dotenv').config( {path: '../.env'})
 //db
 const connectDB = require('../db/connect')
 const { Worker } = require('bullmq')
@@ -6,12 +6,14 @@ const { connection } = require('../config/bullmq')
 const {processOrder}= require('../services/order')
 const {logger} = require('../config/logger')
 //redis
-const {connectRedis} = require('../config/redis')
+const {connectRedis, client} = require('../config/redis')
 
 const startWorker = async()=>{
   try{
     await connectDB(process.env.MONGO_URI)
-    await connectRedis()
+    if(!client.isOpen){
+      await connectRedis()
+    }
     const worker = new Worker(
       process.env.ORDER_QUEUE_NAME,
       async (job) => {
@@ -51,10 +53,11 @@ const startWorker = async()=>{
 
   }catch(error){
      logger.error({
-      error: err.message
+      error: error.message
     },
      'Worker startup failed')
   }
 }
 
-startWorker()
+module.exports = {startWorker}
+// startWorker()

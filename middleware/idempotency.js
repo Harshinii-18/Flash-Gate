@@ -35,13 +35,13 @@ const idempotencyMiddleware = async(req, res, next)=>{
       },
       'Duplicate Idempotency request'
       )
-        throw new BadRequestError('Idempotency key reused with different request')
+        throw new ConflictError('Idempotency key reused with different request')
       }
     
 
     if(content.status ==="PROCESSING"){
       throw new ConflictError('Request already in progress')
-    }else if(content.status === "SUCCESS"){
+    }else if(content.status === "COMPLETED"){
       res.set('X-Idempotency-Status', 'CACHED');
       logger.info({
         requestId : req.requestId,

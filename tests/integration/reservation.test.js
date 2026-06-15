@@ -3,6 +3,7 @@ const app = require('../../app')
 const Product = require('../../models/Product')
 const crypto = require('crypto')
 const mongoose = require('mongoose')
+const now = new Date()
 //helper
 const createUser = require('../helpers/createUser')
 const createProduct = require('../helpers/createProduct')
@@ -18,7 +19,6 @@ describe('Reservation API', () => {
       role: 'Admin'
     })
     const product = await createProduct({createdBy: admin._id})
-    console.log('Created product',product)
 
     // Act
     const response = await request(app)
@@ -65,6 +65,33 @@ describe('Reservation API', () => {
     const product = await createProduct({
       createdBy: admin._id,
       stock: 1
+    })
+
+    const response = await request(app)
+      .post('/api/v1/flash/reserve')
+      .set('Authorization', `Bearer ${token}`)
+      .set('Idempotency-Key', `reservation-${crypto.randomUUID()}`)
+      .send({
+        productId: product._id,
+        quantity: 5
+      })
+
+    expect(response.statusCode).toBe(400)
+
+  })
+
+    test('returns 400 when reservation window expired', async () => {
+
+    const user = await createUser()
+    const token = user.createJWT()
+
+    const admin = await createUser({
+      role: 'Admin'
+    })
+    const product = await createProduct({
+      createdBy: admin._id,
+      flashSaleStart: new Date(now.getTime() - 7200000),
+      flashSaleEnd: new Date(now.getTime() - 3600000)
     })
 
     const response = await request(app)

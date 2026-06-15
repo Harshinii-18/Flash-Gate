@@ -8,7 +8,7 @@ const {logger} = require('../config/logger')
 const orderQueue = require('../queues/order')
 
 const scheduleOrder = async({reservationId, idempotencyKey})=>{
-  await orderQueue.add(
+  const job = await orderQueue.add(
   "PROCESS_ORDER",
     {reservationId, idempotencyKey},
     {attempts: 3, backoff: {type: "exponential",delay: 2000}}
@@ -19,6 +19,10 @@ const scheduleOrder = async({reservationId, idempotencyKey})=>{
   },
   'Job Created for order processing'
   )
+  return {
+    jobId : job.id,
+    name : job.name
+  }
 } 
 
 const processOrder = async({reservationId, idempotencyKey})=>{

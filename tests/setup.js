@@ -2,12 +2,14 @@ require('dotenv').config({ path: '.env.test' })
 const mongoose = require('mongoose')
 const redis = require('redis')
 const crypto = require('crypto')
+// const { startWorker } = require('../workers/order')
 
 //db
 const connectDB = require('../db/connect')
 //redis
 const {connectRedis, client} = require('../config/redis')
 const orderQueue = require('../queues/order')
+// let worker
 
 
 beforeAll(async () => {
@@ -15,6 +17,7 @@ beforeAll(async () => {
   if (!client.isOpen) {
     await connectRedis()
   }
+  // worker = await startWorker()
 })
 
 beforeEach(async () => {
@@ -34,5 +37,8 @@ beforeEach(async () => {
 afterAll(async () => {
   await mongoose.disconnect()
   await orderQueue.close()
+  // if(worker){
+  //   await worker.close()
+  // }
   await client.quit()
 })
