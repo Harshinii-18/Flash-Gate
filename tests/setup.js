@@ -23,7 +23,7 @@ beforeAll(async () => {
 beforeEach(async () => {
   //clear db
   await Promise.all(
-  Object.values(mongoose.connection.collections)
+  await Object.values(mongoose.connection.collections)
     .map(collection => collection.deleteMany({}))
   )
   //clear Redis

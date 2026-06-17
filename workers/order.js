@@ -1,4 +1,11 @@
-require('dotenv').config( {path: '../.env'})
+const envFile =
+  process.env.NODE_ENV === 'load'
+    ? '.env.load'
+    : '.env'
+
+require('dotenv').config({
+  path: envFile
+})
 //db
 const connectDB = require('../db/connect')
 const { Worker } = require('bullmq')
@@ -60,4 +67,3 @@ const startWorker = async()=>{
 }
 
 module.exports = {startWorker}
-// startWorker()

@@ -1,4 +1,12 @@
-require('dotenv').config()
+const envFile =
+  process.env.NODE_ENV === 'load'
+    ? '.env.load'
+    : '.env'
+
+require('dotenv').config({
+  path: envFile
+})
+// require('dotenv').config()
 const app = require('./app')
 
 //logger
